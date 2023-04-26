@@ -1,5 +1,6 @@
 clear
 clc
+addpath('/opt/dora/Dora/IBEAS/Functions/');
 %% Processing images T1 with dartel method
 
 % Principal information
@@ -9,14 +10,14 @@ path_in = fullfile('/opt','dora','Dora','Estudio_ELA','Resultados','Volumetria',
     %Enter the output path
 path_out = fullfile('/opt','dora','Dora','Estudio_ELA','Resultados','Volumetria','DARTEL');
 
-id_1 = "sub-PAC";
-id_2 = "sub-PAP";
+id_1 = "sub-C";
+id_2 = "sub-P";
 
 [controls,patients,nfiles,paths_ctr_outs,paths_pat_outs] = principal_info(path_in,path_out,id_1,id_2,"no_pair");
 
     %% STEP1: Segmentation of white and grey matter
 
-seg_all = cellstr([paths_ctr_outs(:,1);paths_pat_outs(:,1)]);
+seg_all = cellstr(paths_ctr_outs(:,1),paths_pat_outs(:,1));
 
 segment_matter_job(seg_all);
     
@@ -38,9 +39,9 @@ normalize_dartel_job(char(tmp_select),char(u_rc1),char(c1))
     
     %% STEP 4 Tissues volumen
     
-ti_vol = [paths_pat_outs([1:end],6)];
+% ti_vol = [paths_pat_outs([1:end],6)];
 %ti_vol = [paths_pat_outs([1:28],6);paths_pat_outs(30:length(paths_pat_outs),6)];
-%ti_vol = [paths_ctr_outs(:,6) ; paths_pat_outs(:,6)];
+ti_vol = [paths_ctr_outs(:,6) ; paths_pat_outs(:,6)];
 %ti_vol = [paths_pat_outs([1:7],6);paths_pat_outs([9:14],6);paths_pat_outs([16:18],6);paths_pat_outs([20:23],6)];
 %ti_vol = [paths_pat_outs(1:28,6);paths_pat_outs(30:32,6)];
 
@@ -55,10 +56,41 @@ vol_total = vol_wm + vol_gm +vol_le;
     %% STEP4: Statistics with the results of the normalize template
 
 
-S = load('controles-pacientes.txt');
+%S = load('controles-pacientes.txt');
 
-mkdir (fullfile(path_out,'Result_DARTEL_actual'));
-dir_out = fullfile(path_out,'Result_DARTEL_actual');
+[name1 name2]= search_database(patients',path_out);
+
+fileID = readtable(name1);
+
+mkdir (fullfile(path_out,'Result_DARTEL_actual',name2(end)));
+dir_out = fullfile(path_out,'Result_DARTEL_actual',name2(end));
+path_pat = fullfile(path_out);
+
+var1_batch = {};
+var2_batch = [];
+var3_batch = [];
+var4_batch = [];
+var5_batch = [];
+
+[rows1 columns1] = size(fileID);
+for i = 1 : rows1
+    names_var = string(fileID.Var1(i));
+    var1_batch{i,1} = char(fullfile(path_pat,names_var,strcat('smwc1',names_var(),',1')));
+    var2_batch(i,1) = fileID.Var2(i);
+    var3_batch(i,1) = fileID.Var3(i);
+    var4_batch(i,1) = fileID.Var4(i);
+%     if string(fileID.Var3(i)) == "Mujer"
+%         var3_batch(i,1) = 0; %If the varaible is Mujer change the value for 0
+%     else
+%         var3_batch(i,1) = 1;
+%     end
+%         var4_batch(i,1) = fileID.Var4(i);
+%     if string(fileID.Var4(i)) == "E3/E3" || string(fileID.Var4(i)) == "E3/E2"
+%         var4_batch(i,1) = 0; %If the varaible is Mujer change the value for 0
+%     else
+%         var4_batch(i,1) = 1;
+%     end
+end
 
 two_sample_ttest(dir_out,paths_ctr_outs(:,7),paths_pat_outs(:,7),vol_total,S);
 
@@ -427,3 +459,10 @@ name1 = 'ASLFR_alto';
 name2 = 'ASLFR_bajo';
 
 two_sample_ttest(dir_paired_out, GrupoASLFR_basal1', GrupoASLFR_basal0', vol_total, Age, name1,name2);
+
+
+
+
+
+
+    
