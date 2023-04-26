@@ -1,8 +1,8 @@
-% Buscar filas y columnas dentro de una base de datos suministrada
+% Buscar filas y columnas dentro de una base de datos subministrada
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [name_file] = search_database(subjects_input,path_out)
+function [name_file, name_var] = search_database(subjects_input,path_out)
 
 disp('---------------------------------------------------------------')
 [file_database,path_database] = uigetfile({'*.xlsx';'*.csv'});
@@ -70,12 +70,9 @@ for y = 1 : rowsubj
     for z = 1 : rows
         if subj(y,1) == string(T{z,ids_variable})
             for indx = 1 : length(index_var)
-                %comas_remplace = replace(string(T{z,T.Properties.VariableNames{index_var(indx)}}),'.',',');
-                %disp(comas_remplace)
-                %if string(T{z,T.Properties.VariableNames{index_var(indx)}})
                 miss = ismissing(string(T{z,T.Properties.VariableNames{index_var(indx)}}));
                 if miss ~= 1
-                    if string(T{z,T.Properties.VariableNames{index_var(indx)}}) ~= "0"
+                    if string(T{z,T.Properties.VariableNames{index_var(indx)}}) ~= ""
                         var1(y,indx) = string(T{z,T.Properties.VariableNames{index_var(indx)}});
                     else
                         aux4 = aux4 + 1;
@@ -98,10 +95,15 @@ for ii = 0 : length(variable_database) - 1
 end
 
 name_file = strcat(sprintf(str_names2,variable_database),'.txt');
+name_var = variable_database;
 
-miss_data = input('Data is missing, do you want to delete it (d) or keep it (k)?','s');
+miss_data = input('Data is missing, do you want to delete it (d) or keep it (k)?: ','s');
 if miss_data == 'd'
-    var1([aux3'],:) = [];
+    if aux3 == 0
+        disp('Not delete')
+    else
+        var1(aux3',:) = [];
+    end
 else
     var1 = var1;
 end
@@ -111,3 +113,4 @@ summary_database = var1;
 writematrix(summary_database,strcat(path_out,'/',name_file));
 
 end
+
