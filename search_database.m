@@ -98,14 +98,30 @@ name_file = strcat(sprintf(str_names2,variable_database),'.txt');
 name_var = variable_database;
 
 miss_data = input('Data is missing, do you want to delete it (d) or keep it (k)?: ','s');
-if miss_data == 'd'
-    if aux3 == 0
-        disp('Not delete')
-    else
-        var1(aux3',:) = [];
+delete_data = input('You want delete data of the new list? (y) or (n): ','s');
+if delete_data == 'y'
+    row_delete = input('Please enter the rows to be deleted (Use this format PAT01,CTR01): ','s');
+    row_delete_1 = split(row_delete,',');
+    for id_enter = 1 : length(row_delete_1)
+        row_delete_2(id_enter) = string(row_delete_1(id_enter));
+        for id_var = 1 : length(var1)
+            if row_delete_2(id_enter) == var1(id_var)
+                var1(id_var,:) = [];
+            else
+                var1 = var1;
+            end
+        end
     end
-else
-    var1 = var1;
+    else
+        if miss_data == 'd'
+            if aux3 == 0
+                disp('Not delete')
+            else
+                var1(aux3',:) = [];
+            end
+    else
+        var1 = var1;
+    end
 end
 
 summary_database = var1;
@@ -113,4 +129,3 @@ summary_database = var1;
 writematrix(summary_database,strcat(path_out,'/',name_file));
 
 end
-

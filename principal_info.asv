@@ -44,8 +44,8 @@ for nfile = 1 : length(ids_control)
     if ~isempty (prevdir)
         if ~exist(char(ids_control(nfile)),'dir')
             mkdir (char(fullfile(path_out,ids_control(nfile))))
-            copyfile (char(fullfile(path_in,ids_control(nfile),"anat",char(ids_control(nfile))+"_run-1_T1w.nii.gz")),char(fullfile(path_out,ids_control(nfile),ids_control(nfile)+".nii.gz")))
-            gunzip (char(fullfile(path_out,ids_control(nfile),ids_control(nfile)+".nii.gz")))
+            copyfile (char(fullfile(path_in,ids_control(nfile),"anat",char(ids_control(nfile))+"_run-1_T1w.nii.gz")),char(fullfile(path_out,ids_control(nfile),ids_control(nfile)+".nii")))
+            gunzip (fullfile(path_out,ids_control(nfile),ids_control(nfile)+".nii")))
         end
         if nfile == 1
             path_out_ctr_seg = [char(fullfile(path_out,char(ids_control(nfile)),char(ids_control(nfile))+".nii,1"))];
@@ -72,8 +72,8 @@ for nfile = 1 : length(ids_patients)
     if ~isempty (prevdir)
         if ~exist(char(ids_patients(nfile)),'dir')
             mkdir (char(fullfile(path_out,ids_patients(nfile))))
-            copyfile (char(fullfile(path_in,ids_patients(nfile),"anat",char(ids_patients(nfile))+"_run-1_T1w.nii.gz")),char(fullfile(path_out,ids_patients(nfile),ids_patients(nfile)+".nii.gz")))
-            gunzip (char(fullfile(path_out,ids_patients(nfile),ids_patients(nfile)+".nii.gz")))
+            copyfile (char(fullfile(path_in,ids_patients(nfile),"anat",char(ids_patients(nfile))+"_run-1_T1w.nii.gz")),char(fullfile(path_out,ids_patients(nfile),ids_patients(nfile)+".nii")))
+            gunzip (char(fullfile(path_out,ids_patients(nfile),ids_patients(nfile)+"_run-1_T1w.nii.gz")))
         end
         if nfile == 1
             path_out_pat_seg = [char(fullfile(path_out,char(ids_patients(nfile)),char(ids_patients(nfile))+".nii,1"))];
